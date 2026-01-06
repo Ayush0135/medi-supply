@@ -164,11 +164,11 @@ const Dashboard: React.FC = () => {
   const runAnalysis = async () => {
     setIsAnalyzing(true);
     setLogs([]);
-    addLog("Initializing AI Agent...");
+    addLog("Initializing System...");
 
     setTimeout(() => addLog("Fetching real-time inventory data..."), 500);
     setTimeout(() => addLog("Aggregating community symptom reports..."), 900);
-    setTimeout(() => addLog("Running LLaMA-3 reasoning model..."), 1300);
+    setTimeout(() => addLog("Processing predictive models..."), 1300);
 
     const result = await AIService.runAnalysis();
     const regionData = await AIService.getRegionalRisk();
@@ -229,7 +229,7 @@ const Dashboard: React.FC = () => {
             className="flex items-center justify-center bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-2.5 rounded-lg font-medium transition-all shadow-sm disabled:opacity-70"
           >
             {isAnalyzing ? <RefreshCw className="animate-spin mr-2" size={18} /> : <BrainCircuit className="mr-2" size={18} />}
-            {isAnalyzing ? 'Processing...' : 'Run AI Agent'}
+            {isAnalyzing ? 'Processing...' : 'Run Analysis'}
           </button>
         </div>
       </div>
@@ -258,7 +258,7 @@ const Dashboard: React.FC = () => {
           <div className="bg-white rounded-xl p-6 border border-slate-200 shadow-sm">
             <div className="flex items-center justify-between mb-4">
               <h3 className="font-bold text-slate-700">Prevalent Diseases</h3>
-              <span className="px-2 py-1 bg-red-50 text-red-600 text-xs font-bold rounded">AI DETECTED</span>
+              <span className="px-2 py-1 bg-red-50 text-red-600 text-xs font-bold rounded">SYSTEM ALERT</span>
             </div>
             <div className="space-y-2">
               {localInsights.health_intelligence.prevalent_diseases.map((d: string, i: number) => (
@@ -297,7 +297,7 @@ const Dashboard: React.FC = () => {
           <div className="bg-slate-50 px-6 py-4 border-b border-slate-200 flex items-center justify-between">
             <h3 className="font-semibold text-slate-800 flex items-center">
               <BrainCircuit size={18} className="text-indigo-600 mr-2" />
-              AI Agent Insights
+              System Insights
             </h3>
             {analysis && <RiskBadge level={analysis.riskLevel} />}
           </div>
@@ -346,7 +346,7 @@ const Dashboard: React.FC = () => {
               <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
               <div className="w-3 h-3 rounded-full bg-green-500"></div>
             </div>
-            <span className="text-xs font-mono text-slate-400">agent_runtime.log</span>
+            <span className="text-xs font-mono text-slate-400">system_runtime.log</span>
           </div>
           <div className="flex-1 p-4 font-mono text-xs text-green-400 overflow-y-auto space-y-1">
             {logs.map((log, i) => (

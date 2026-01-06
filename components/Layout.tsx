@@ -54,7 +54,7 @@ const Layout: React.FC<LayoutProps> = ({ children, userRole, currentView, onChan
               <Activity size={24} className="text-white" />
             </div>
             <div>
-              <h1 className="text-xl font-bold tracking-tight">MedSupply AI</h1>
+              <h1 className="text-xl font-bold tracking-tight">MedSupply</h1>
               <p className="text-xs text-slate-400">Intelligent Logistics</p>
             </div>
           </div>
@@ -66,7 +66,7 @@ const Layout: React.FC<LayoutProps> = ({ children, userRole, currentView, onChan
               <NavItem view="home" icon={Home} label="Home" />
 
               {(userRole === UserRole.ADMIN || userRole === UserRole.WAREHOUSE) && (
-                <NavItem view="dashboard" icon={LayoutDashboard} label="AI Control Tower" />
+                <NavItem view="dashboard" icon={LayoutDashboard} label="Operations Tower" />
               )}
 
               {/* Allow Suppliers to view Inventory as well */}
@@ -106,7 +106,7 @@ const Layout: React.FC<LayoutProps> = ({ children, userRole, currentView, onChan
             <div className="bg-blue-600 p-1.5 rounded mr-2">
               <Activity size={18} className="text-white" />
             </div>
-            <span className="font-bold text-slate-800">MedSupply AI</span>
+            <span className="font-bold text-slate-800">MedSupply</span>
           </div>
           <button onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} className="text-slate-600">
             <Menu size={24} />
