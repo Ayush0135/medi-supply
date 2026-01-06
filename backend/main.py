@@ -1,7 +1,7 @@
 from dotenv import load_dotenv
 import os
 from pathlib import Path
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy import create_engine, Column, Integer, String, Float, DateTime, JSON
 from sqlalchemy.orm import sessionmaker, declarative_base
@@ -23,7 +23,25 @@ app.add_middleware(
 
 @app.get("/")
 def read_root():
-    return {"message": "MedSupply AI Backend is running"}
+    return {"message": "MedSupply Backend is running"}
+
+@app.get("/api/location")
+def get_location(request: Request):
+    # Vercel automatically creates these headers
+    city = request.headers.get("x-vercel-ip-city")
+    region = request.headers.get("x-vercel-ip-country-region")
+    country = request.headers.get("x-vercel-ip-country")
+    lat = request.headers.get("x-vercel-ip-latitude")
+    lon = request.headers.get("x-vercel-ip-longitude")
+    
+    return {
+        "city": city,
+        "region": region,
+        "country": country,
+        "latitude": lat,
+        "longitude": lon,
+        "success": bool(city and lat and lon)
+    }
 
 
 from scraper import search_hospitals

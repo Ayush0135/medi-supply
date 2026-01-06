@@ -123,6 +123,22 @@ const Dashboard: React.FC = () => {
         console.warn("ipwho.is failed", e);
       }
 
+      // Attempt 3: Vercel Headers (Server-side)
+      try {
+        const res = await fetch('/api/location');
+        if (res.ok) {
+          const data = await res.json();
+          if (data.success) {
+            addLog(`Location detected via Cloud Headers: ${data.city}, ${data.region}`);
+            // Note: Vercel headers are strings, ensure we pass numbers if needed, fetchLocalInsights expects numbers
+            fetchLocalInsights(parseFloat(data.latitude), parseFloat(data.longitude));
+            return;
+          }
+        }
+      } catch (e) {
+        console.warn("Vercel location header fetch failed", e);
+      }
+
       throw new Error("All IP providers failed");
 
     } catch (e) {
