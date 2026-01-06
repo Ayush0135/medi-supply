@@ -8,3 +8,10 @@ scikit-learn
 joblib
 python-multipart
 requests
+beautifulsoup4
+googlesearch-python
+google-genai
+google-genai
+python-dotenv
+groq
+httpx

@@ -1,14 +1,15 @@
 import React from 'react';
-import { 
-  Activity, 
-  Package, 
-  Users, 
-  LayoutDashboard, 
-  LogOut, 
+import {
+  Activity,
+  Package,
+  Users,
+  LayoutDashboard,
+  LogOut,
   Menu,
   ShieldAlert,
   Truck,
-  Home
+  Home,
+  Globe
 } from 'lucide-react';
 import { UserRole } from '../types';
 
@@ -29,11 +30,10 @@ const Layout: React.FC<LayoutProps> = ({ children, userRole, currentView, onChan
         onChangeView(view);
         setIsMobileMenuOpen(false);
       }}
-      className={`flex items-center w-full px-4 py-3 mb-1 rounded-lg transition-colors ${
-        currentView === view 
-          ? 'bg-blue-600 text-white shadow-md' 
-          : 'text-slate-400 hover:bg-slate-800 hover:text-white'
-      }`}
+      className={`flex items-center w-full px-4 py-3 mb-1 rounded-lg transition-colors ${currentView === view
+        ? 'bg-blue-600 text-white shadow-md'
+        : 'text-slate-400 hover:bg-slate-800 hover:text-white'
+        }`}
     >
       <Icon size={20} className="mr-3" />
       <span className="font-medium">{label}</span>
@@ -62,13 +62,13 @@ const Layout: React.FC<LayoutProps> = ({ children, userRole, currentView, onChan
           <nav className="flex-1 p-4 overflow-y-auto">
             <div className="mb-6">
               <p className="px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Platform</p>
-              
+
               <NavItem view="home" icon={Home} label="Home" />
-              
+
               {(userRole === UserRole.ADMIN || userRole === UserRole.WAREHOUSE) && (
                 <NavItem view="dashboard" icon={LayoutDashboard} label="AI Control Tower" />
               )}
-              
+
               {/* Allow Suppliers to view Inventory as well */}
               {(userRole === UserRole.ADMIN || userRole === UserRole.WAREHOUSE || userRole === UserRole.SUPPLIER) && (
                 <NavItem view="warehouse" icon={Package} label="Inventory" />
@@ -79,21 +79,15 @@ const Layout: React.FC<LayoutProps> = ({ children, userRole, currentView, onChan
               )}
 
               <NavItem view="community" icon={Users} label="Community Reports" />
+
+              <NavItem view="network" icon={Globe} label="Hospital Network" />
             </div>
-            
-            <div className="mt-auto">
-               <div className="bg-slate-800 rounded-xl p-4 mb-4">
-                 <div className="flex items-center mb-2 text-blue-400">
-                    <ShieldAlert size={16} className="mr-2" />
-                    <span className="text-xs font-bold uppercase">System Status</span>
-                 </div>
-                 <p className="text-xs text-slate-300">AI Agent Active<br/>Gemini 2.5 Connected</p>
-               </div>
-            </div>
+
+            <div className="mt-auto"></div>
           </nav>
 
           <div className="p-4 border-t border-slate-800">
-            <button 
+            <button
               onClick={onLogout}
               className="flex items-center w-full px-4 py-2 text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg transition-colors"
             >
@@ -109,7 +103,7 @@ const Layout: React.FC<LayoutProps> = ({ children, userRole, currentView, onChan
         {/* Mobile Header */}
         <header className="md:hidden bg-white border-b border-slate-200 p-4 flex items-center justify-between">
           <div className="flex items-center">
-             <div className="bg-blue-600 p-1.5 rounded mr-2">
+            <div className="bg-blue-600 p-1.5 rounded mr-2">
               <Activity size={18} className="text-white" />
             </div>
             <span className="font-bold text-slate-800">MedSupply AI</span>
