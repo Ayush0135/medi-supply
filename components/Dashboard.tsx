@@ -73,7 +73,8 @@ const Dashboard: React.FC = () => {
       const { city, state } = await getAddressFromCoords(lat, lon);
 
       if (city && city !== "Unknown") {
-        const res = await fetch(`http://localhost:8000/api/insights?lat=${lat}&lon=${lon}&city=${city}&state=${state}`);
+        // Use relative path for Vercel deployment (handled by vercel.json or vite proxy)
+        const res = await fetch(`/api/insights?lat=${lat}&lon=${lon}&city=${city}&state=${state}`);
         if (!res.ok) throw new Error("Backend API failed");
         const data = await res.json();
         setLocalInsights(data);
