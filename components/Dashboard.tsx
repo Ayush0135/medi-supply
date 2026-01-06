@@ -39,17 +39,32 @@ const Dashboard: React.FC = () => {
   };
 
   const getAddressFromCoords = async (lat: number, lon: number) => {
+    // Attempt 1: BigDataCloud
     try {
       const res = await fetch(`https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${lat}&longitude=${lon}&localityLanguage=en`);
+      if (!res.ok) throw new Error("BigDataCloud failed");
       const data = await res.json();
-      // Fallback logic for city names
-      const city = data.city || data.locality || data.principalSubdivision || "Unknown Location";
-      const state = data.principalSubdivision || data.countryName || "";
-      return { city, state };
+      const city = data.city || data.locality || data.principalSubdivision;
+      const state = data.principalSubdivision || data.countryName;
+      if (city) return { city, state: state || "" };
     } catch (e) {
-      console.error("Reverse geocoding failed", e);
-      return { city: "Unknown", state: "" };
+      console.warn("BigDataCloud reverse geo failed, trying fallback...", e);
     }
+
+    // Attempt 2: Nominatim (OpenStreetMap)
+    try {
+      const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`);
+      if (!res.ok) throw new Error("Nominatim failed");
+      const data = await res.json();
+      const addr = data.address;
+      const city = addr.city || addr.town || addr.village || addr.county || addr.state_district;
+      const state = addr.state || addr.country;
+      if (city) return { city, state: state || "" };
+    } catch (e) {
+      console.warn("Nominatim reverse geo failed", e);
+    }
+
+    return { city: "Unknown Location", state: "" };
   };
 
   const fetchLocalInsights = async (lat: number, lon: number) => {
@@ -78,17 +93,42 @@ const Dashboard: React.FC = () => {
   const fetchIpLocation = async () => {
     try {
       setLocationStatus("Estimating location via IP...");
-      const res = await fetch('https://ipapi.co/json/');
-      const data = await res.json();
-      if (data.latitude && data.longitude) {
-        fetchLocalInsights(data.latitude, data.longitude);
-      } else {
-        throw new Error("IP Geolocation return invalid data");
+
+      // Attempt 1: ipapi.co
+      try {
+        const res = await fetch('https://ipapi.co/json/');
+        if (!res.ok) throw new Error("ipapi.co rate limited or failed");
+        const data = await res.json();
+        if (data.latitude && data.longitude) {
+          addLog(`Location estimated via IP (ipapi.co): ${data.city}, ${data.region}`);
+          fetchLocalInsights(data.latitude, data.longitude);
+          return;
+        }
+      } catch (e) {
+        console.warn("ipapi.co failed, trying fallback...", e);
       }
+
+      // Attempt 2: ipwho.is (No API key required, good fallback)
+      try {
+        const res = await fetch('https://ipwho.is/');
+        if (!res.ok) throw new Error("ipwho.is failed");
+        const data = await res.json();
+        if (data.success && data.latitude && data.longitude) {
+          addLog(`Location estimated via IP (ipwho.is): ${data.city}, ${data.region}`);
+          fetchLocalInsights(data.latitude, data.longitude);
+          return;
+        }
+      } catch (e) {
+        console.warn("ipwho.is failed", e);
+      }
+
+      throw new Error("All IP providers failed");
+
     } catch (e) {
       console.error("IP Location failed", e);
-      setLocationError("Automatic location failed. Please click 'Retry Location'.");
+      setLocationError("Could not detect location automatically.");
       setLocationStatus("Location Unknown");
+      addLog("Location detection failed. Please allow GPS access.");
     }
   };
 

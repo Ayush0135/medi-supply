@@ -1,7 +1,14 @@
+from dotenv import load_dotenv
+import os
+from pathlib import Path
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy import create_engine, Column, Integer, String, Float, DateTime, JSON
 from sqlalchemy.orm import sessionmaker, declarative_base
+
+# Load env variables from root .env.local
+env_path = Path(__file__).resolve().parent.parent / '.env.local'
+load_dotenv(dotenv_path=env_path)
 
 app = FastAPI()
 
@@ -19,8 +26,8 @@ def read_root():
     return {"message": "MedSupply AI Backend is running"}
 
 
-from .scraper import search_hospitals
-from .insights import get_weather, get_health_trends
+from scraper import search_hospitals
+from insights import get_weather, get_health_trends
 
 @app.get("/api/hospitals/{state}")
 def get_hospitals(state: str):
